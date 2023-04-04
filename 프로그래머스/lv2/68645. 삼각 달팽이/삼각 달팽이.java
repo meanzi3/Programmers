@@ -1,4 +1,7 @@
 class Solution {
+    private static final int[] dx = {0,1,-1};
+    private static final int[] dy = {1,0,-1}; // 아래쪽, 오른쪽, 왼쪽위
+    
     public int[] solution(int n) {
         
         int[][] triangle = new int[n][n]; // 삼각형 만들 배열 선언
@@ -6,38 +9,22 @@ class Solution {
         
         int x = 0;
         int y = 0; // 숫자를 채운 현재 위치
+        int d = 0; // 인덱스의 방향 (0,1,2 => 아래쪽, 오른쪽, 왼쪽위)
         
         while(true){
-            // 아래로
-            while(true){
-                triangle[y][x] = v++;
-                if(y+1 == n || triangle[y+1][x] != 0)  break; // 더 이상 아래로 이동할 수 없을 때 빠져나옴
-                y += 1;    
-            }
-            // 아래쪽으로 진행하는 마지막 진행 방향일 경우
-            if(x+1 == n || triangle[y][x+1] != 0) break; // 오른쪽으로도 진행할 수 없는 경우에 빠져나옴
-            x += 1; 
+            triangle[y][x] = v++;
             
-            // 오른쪽으로
-            while(true){
-                triangle[y][x] = v++;
-                if(x + 1 == n || triangle[y][x+1] != 0) break; // 더 이상 오른쪽으로 이동할 수 없을 때 빠져나옴
-                x += 1;
-            }
-            // 오른쪽으로 진행하는 마지막 진행 방향일 경우
-            if(triangle[y-1][x-1] != 0) break; // 왼쪽 위로도 진행할 수 없는 경우에 빠져나옴
-            x -= 1;
-            y -= 1;
+            int nx = x + dx[d];
+            int ny = y + dy[d];
             
-            // 왼쪽위로
-            while(true){
-                triangle[y][x] = v++;
-                if(triangle[y-1][x-1] != 0) break; // 더 이상 왼쪽 위로 이동할 수 없을 때 빠져나옴
-                x -= 1;
-                y -= 1;
+            if(nx == n || ny == n || nx == -1 || ny == -1 || triangle[ny][nx] != 0){
+                d = (d+1) % 3; // d = 0~2
+                nx = x + dx[d];
+                ny = y + dy[d];
+                if(nx == n || ny == n || nx == -1 || ny == -1 || triangle[ny][nx] != 0) break; // 모든 숫자가 다 채워졌을 때
             }
-            if(y+1 == n || triangle[y+1][x] != 0) break; // 아래쪽으로도 진행할 수 없는 경우 빠져나옴
-            y += 1;
+            x = nx;
+            y = ny;
         }
         
         int[] answer = new int[v-1];
